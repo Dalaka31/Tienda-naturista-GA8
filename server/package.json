@@ -1,0 +1,16 @@
+{
+  "name": "naturista-backend",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch --experimental-websocket index.js",
+    "start": "node --experimental-websocket index.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.105.4",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "ws": "^8.21.0"
+  }
+}

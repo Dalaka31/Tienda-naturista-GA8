@@ -24,8 +24,8 @@ export async function loadProducts() {
 
   return (data || []).map(p => ({
     ...p,
-    stock_actual: Array.isArray(p.inventario) 
-      ? (p.inventario[0]?.stock_actual || 0) 
+    stock_actual: Array.isArray(p.inventario)
+      ? (p.inventario[0]?.stock_actual || 0)
       : (p.inventario?.stock_actual || 0)
   }))
 }

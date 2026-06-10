@@ -35,12 +35,12 @@ const LocationIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" he
 const MailIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
 const PhoneIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
 const ClockIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-const AddCartIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+const AddCartIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" /><line x1="3" y1="6" x2="21" y2="6" /><path d="M16 10a4 4 0 0 1-8 0" /></svg>
 const TrashIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-const PlantIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary-light)" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
-const SearchBigIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-light)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-const UserIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-const MapPinIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+const PlantIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary-light)" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" /><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" /></svg>
+const SearchBigIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-light)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
+const UserIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
+const MapPinIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>
 
 
 function Toast({ message, show }) {
@@ -100,7 +100,7 @@ export default function Store() {
 
   function addToCart(product, e) {
     if (e) e.stopPropagation()
-    
+
 
     if (product.stock_actual <= 0) {
       showToast(`Agotado: ${product.name}`)
@@ -109,7 +109,7 @@ export default function Store() {
 
     setCart((prev) => {
       const exists = prev.find((it) => it.id === product.id)
-      
+
 
       if (exists && exists.qty >= product.stock_actual) {
         showToast(`Límite de stock: ${product.stock_actual} unidades disponibles.`)
@@ -173,17 +173,15 @@ export default function Store() {
         total: totalPrice,
       })
 
-
       const url = buildWhatsAppUrl(cart)
       window.open(url, '_blank')
-
 
       setCart([])
       setCheckoutOpen(false)
       setCartOpen(false)
       showToast('¡Pedido registrado exitosamente!')
     } catch (err) {
-
+      // Si la API falla mostrar error, NO redirigir a WhatsApp
       setCheckoutError(err.message || 'Error al procesar el pedido. Intenta de nuevo.')
     } finally {
       setCheckoutLoading(false)
@@ -197,6 +195,7 @@ export default function Store() {
 
   return (
     <>
+      {/* HEADER */}
       <header className="header">
         <div className="header-inner">
           <a href="/" className="header-logo">
@@ -217,6 +216,7 @@ export default function Store() {
         </div>
       </header>
 
+      {/* CATEGORIES */}
       <nav className="categories-bar">
         <div className="categories-inner">
           {CATEGORIES.map((cat) => (
@@ -225,6 +225,7 @@ export default function Store() {
         </div>
       </nav>
 
+      {/* BANNER */}
       <section className="banner-section">
         <div className="banner-wrapper">
           <img src="/banner.png" alt="Bienvenidos al Jardín de Morgana" />
@@ -232,12 +233,13 @@ export default function Store() {
         </div>
       </section>
 
+      {/* PRODUCTS */}
       <section className="products-section" id="productos">
         <h1 className="section-title">Nuestros Productos</h1>
         <p className="section-subtitle">Seleccionados con amor para tu bienestar natural</p>
         <div className="products-grid">
           {loading ? (
-             <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '48px', color: 'var(--color-text-light)' }}>
+            <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '48px', color: 'var(--color-text-light)' }}>
               <p style={{ fontSize: '2rem', marginBottom: '8px' }}>⏳</p>
               <p>Cargando productos...</p>
             </div>
@@ -245,7 +247,7 @@ export default function Store() {
             <article key={product.id} className="product-card" onClick={() => setSelectedProduct(product)}>
               <span className="product-card-category">{product.category}</span>
               <img className={`product-card-img ${product.stock_actual <= 0 ? 'out-of-stock' : ''}`} src={product.image} alt={product.name} />
-              
+
               {product.stock_actual <= 0 && (
                 <div className="stock-badge empty">Agotado</div>
               )}
@@ -258,9 +260,9 @@ export default function Store() {
                   <h2 className="product-name">{product.name}</h2>
                   <p className="product-price">{formatPrice(product.price)}</p>
                 </div>
-                <button 
-                  className={`add-cart-btn ${product.stock_actual <= 0 ? 'disabled' : ''}`} 
-                  onClick={(e) => product.stock_actual > 0 && addToCart(product, e)} 
+                <button
+                  className={`add-cart-btn ${product.stock_actual <= 0 ? 'disabled' : ''}`}
+                  onClick={(e) => product.stock_actual > 0 && addToCart(product, e)}
                   title={product.stock_actual > 0 ? "Agregar al carrito" : "Agotado"}
                 >
                   <AddCartIcon />
@@ -277,6 +279,7 @@ export default function Store() {
         </div>
       </section>
 
+      {/* FOOTER */}
       <footer className="footer">
         <div className="footer-inner">
           <div className="footer-brand">
@@ -299,6 +302,7 @@ export default function Store() {
         <div className="footer-bottom"><p>© 2026 El Jardín de Morgana. Todos los derechos reservados.</p></div>
       </footer>
 
+      {/* CART SIDEBAR */}
       <div className={`cart-overlay ${cartOpen ? 'open' : ''}`} onClick={() => setCartOpen(false)} />
       <aside className={`cart-sidebar ${cartOpen ? 'open' : ''}`}>
         <div className="cart-header">
@@ -340,6 +344,7 @@ export default function Store() {
         )}
       </aside>
 
+      {/* PRODUCT MODAL */}
       <div className={`modal-overlay ${selectedProduct ? 'open' : ''}`} onClick={() => setSelectedProduct(null)}>
         {selectedProduct && (
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -349,7 +354,7 @@ export default function Store() {
               <span className="modal-category">{selectedProduct.category}</span>
               <h2 className="modal-name">{selectedProduct.name}</h2>
               <p className="modal-price">{formatPrice(selectedProduct.price)}</p>
-              
+
               {selectedProduct.stock_actual <= 0 ? (
                 <p style={{ color: '#c0392b', fontSize: '0.9rem', marginBottom: '16px' }}>Agotado</p>
               ) : selectedProduct.stock_actual <= 15 ? (
@@ -358,8 +363,8 @@ export default function Store() {
 
               <p className="modal-desc">{selectedProduct.description}</p>
               <div className="modal-actions">
-                <button 
-                  className="modal-add-btn" 
+                <button
+                  className="modal-add-btn"
                   onClick={() => { addToCart(selectedProduct); setSelectedProduct(null) }}
                   disabled={selectedProduct.stock_actual <= 0}
                   style={{ opacity: selectedProduct.stock_actual <= 0 ? 0.5 : 1, cursor: selectedProduct.stock_actual <= 0 ? 'not-allowed' : 'pointer' }}
@@ -373,6 +378,7 @@ export default function Store() {
         )}
       </div>
 
+      {/* ===== CHECKOUT EXPRESS MODAL ===== */}
       <div className={`modal-overlay ${checkoutOpen ? 'open' : ''}`} onClick={() => !checkoutLoading && setCheckoutOpen(false)}>
         {checkoutOpen && (
           <div className="modal-content checkout-modal" onClick={(e) => e.stopPropagation()}>

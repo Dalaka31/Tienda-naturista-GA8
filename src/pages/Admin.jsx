@@ -12,7 +12,7 @@ const formatPrice = (n) =>
 
 const emptyForm = { name: '', price: '', category: CATS[0], image: '', description: '' }
 
-
+/* ===== ICONS ===== */
 const EditIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
 const TrashIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
 const PackageIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
@@ -32,8 +32,8 @@ export default function Admin() {
   const [authed, setAuthed] = useState(false)
   const [password, setPassword] = useState('')
   const [pwError, setPwError] = useState(false)
-  
 
+  // TABS: 'productos' | 'inventario' | 'pendientes' | 'historial'
   const [activeTab, setActiveTab] = useState('productos')
 
 
@@ -42,14 +42,14 @@ export default function Admin() {
   const [orders, setOrders] = useState([])
   const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)
-  
+
 
   const [editing, setEditing] = useState(null)
   const [form, setForm] = useState({ ...emptyForm })
   const [imageFile, setImageFile] = useState(null)
   const [confirmDelete, setConfirmDelete] = useState(null)
-  
 
+  // UI
   const [toast, setToast] = useState('')
   const [search, setSearch] = useState('')
   const fileRef = useRef(null)
@@ -140,7 +140,7 @@ export default function Admin() {
   async function handleSave(e) {
     e.preventDefault()
     if (!form.name.trim() || !form.price || !form.category) return
-    
+
     setSaving(true)
     let finalImageUrl = form.image || '/logo.png'
 
@@ -159,7 +159,7 @@ export default function Admin() {
         const { data: publicUrlData } = supabase.storage
           .from('product-images')
           .getPublicUrl(filePath)
-          
+
         finalImageUrl = publicUrlData.publicUrl
       }
 
@@ -178,7 +178,7 @@ export default function Admin() {
         await updateProduct(editing, data)
         flash('Producto actualizado')
       }
-      
+
       await fetchProducts()
       setEditing(null)
     } catch (err) {
@@ -201,7 +201,7 @@ export default function Admin() {
     }
   }
 
-
+  /* ---------- ORDER ACTIONS ---------- */
   async function handleCompletarPedido(id) {
     try {
       await completarPedido(id)
@@ -213,7 +213,7 @@ export default function Admin() {
   }
 
   async function handleCancelarPedido(id) {
-    if(!confirm('¿Estás seguro de cancelar este pedido?')) return;
+    if (!confirm('¿Estás seguro de cancelar este pedido?')) return;
     try {
       await cancelarPedido(id)
       flash('Pedido cancelado')
@@ -224,7 +224,7 @@ export default function Admin() {
   }
 
   async function handleClearHistory() {
-    if(!confirm('¿Estás seguro de que deseas borrar TODO el historial de ventas? Esta acción no se puede deshacer.')) return;
+    if (!confirm('¿Estás seguro de que deseas borrar TODO el historial de ventas? Esta acción no se puede deshacer.')) return;
     try {
       await clearHistory()
       flash('Historial de ventas borrado')
@@ -277,8 +277,10 @@ export default function Admin() {
   }
 
 
+
   return (
     <div className="admin-wrapper">
+      {/* SIDEBAR */}
       <aside className="admin-sidebar">
         <div className="admin-sidebar-brand">
           <img src="/logo.png" alt="Logo" />
@@ -306,7 +308,9 @@ export default function Admin() {
         </div>
       </aside>
 
+      {/* MAIN CONTENT */}
       <main className="admin-main">
+        {/* TOP BAR */}
         <header className="admin-topbar">
           <div>
             <h1 className="admin-page-title">
@@ -338,8 +342,10 @@ export default function Admin() {
           </div>
         </header>
 
+        {/* CONTENT AREA */}
         <div className="admin-content-wrap">
-          
+
+          {/* TAB: PRODUCTOS */}
           {activeTab === 'productos' && (
             <div className="admin-table-wrap">
               <table className="admin-table">
@@ -380,6 +386,7 @@ export default function Admin() {
             </div>
           )}
 
+          {/* TAB: INVENTARIO */}
           {activeTab === 'inventario' && (
             <div className="admin-table-wrap">
               <table className="admin-table">
@@ -412,12 +419,12 @@ export default function Admin() {
                             handleSaveStock(item.id, formData.get('stock'));
                           }}
                         >
-                          <input 
-                            type="number" 
-                            name="stock" 
-                            className="admin-input sm" 
+                          <input
+                            type="number"
+                            name="stock"
+                            className="admin-input sm"
                             style={{ width: '80px', textAlign: 'center' }}
-                            defaultValue={item.stock_actual} 
+                            defaultValue={item.stock_actual}
                             min="0"
                             required
                           />
@@ -436,102 +443,105 @@ export default function Admin() {
             </div>
           )}
 
+          {/* TAB: PEDIDOS PENDIENTES */}
           {activeTab === 'pendientes' && (
-             <div className="admin-table-wrap">
-               <table className="admin-table">
-                 <thead>
-                   <tr>
-                     <th>Fecha</th>
-                     <th>Cliente</th>
-                     <th>Contacto / Dirección</th>
-                     <th>Detalle Pedido</th>
-                     <th>Total</th>
-                     <th>Acciones</th>
-                   </tr>
-                 </thead>
-                 <tbody>
-                    {loading ? (
-                       <tr><td colSpan="6" className="admin-empty">Cargando pedidos...</td></tr>
-                    ) : filteredOrders.map((o) => (
-                       <tr key={o.id}>
-                         <td><div className="admin-date">{new Date(o.fecha).toLocaleString('es-CO')}</div></td>
-                         <td><div className="admin-table-name">{o.nombre_cliente}</div></td>
-                         <td>
-                           <div className="admin-table-desc"><strong>Tel:</strong> {o.telefono}</div>
-                           <div className="admin-table-desc"><strong>Dir:</strong> {o.direccion}</div>
-                         </td>
-                         <td>
-                           <ul className="admin-order-items">
-                             {o.detalle_carrito.map((item, i) => (
-                               <li key={i}>x{item.qty} {item.name}</li>
-                             ))}
-                           </ul>
-                         </td>
-                         <td className="admin-table-price">{formatPrice(o.total)}</td>
-                         <td>
-                           <div className="admin-action-btns">
-                             <button className="admin-btn-icon success" onClick={() => handleCompletarPedido(o.id)} title="Marcar como Venta Hecha"><CheckIcon /></button>
-                             <button className="admin-btn-icon delete" onClick={() => handleCancelarPedido(o.id)} title="Cancelar Pedido"><XIcon /></button>
-                           </div>
-                         </td>
-                       </tr>
-                    ))}
-                    {!loading && filteredOrders.length === 0 && (
-                       <tr><td colSpan="6" className="admin-empty">No hay pedidos pendientes</td></tr>
-                    )}
-                 </tbody>
-               </table>
-             </div>
+            <div className="admin-table-wrap">
+              <table className="admin-table">
+                <thead>
+                  <tr>
+                    <th>Fecha</th>
+                    <th>Cliente</th>
+                    <th>Contacto / Dirección</th>
+                    <th>Detalle Pedido</th>
+                    <th>Total</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {loading ? (
+                    <tr><td colSpan="6" className="admin-empty">Cargando pedidos...</td></tr>
+                  ) : filteredOrders.map((o) => (
+                    <tr key={o.id}>
+                      <td><div className="admin-date">{new Date(o.fecha).toLocaleString('es-CO')}</div></td>
+                      <td><div className="admin-table-name">{o.nombre_cliente}</div></td>
+                      <td>
+                        <div className="admin-table-desc"><strong>Tel:</strong> {o.telefono}</div>
+                        <div className="admin-table-desc"><strong>Dir:</strong> {o.direccion}</div>
+                      </td>
+                      <td>
+                        <ul className="admin-order-items">
+                          {o.detalle_carrito.map((item, i) => (
+                            <li key={i}>x{item.qty} {item.name}</li>
+                          ))}
+                        </ul>
+                      </td>
+                      <td className="admin-table-price">{formatPrice(o.total)}</td>
+                      <td>
+                        <div className="admin-action-btns">
+                          <button className="admin-btn-icon success" onClick={() => handleCompletarPedido(o.id)} title="Marcar como Venta Hecha"><CheckIcon /></button>
+                          <button className="admin-btn-icon delete" onClick={() => handleCancelarPedido(o.id)} title="Cancelar Pedido"><XIcon /></button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                  {!loading && filteredOrders.length === 0 && (
+                    <tr><td colSpan="6" className="admin-empty">No hay pedidos pendientes</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
           )}
 
+          {/* TAB: HISTORIAL DE VENTAS */}
           {activeTab === 'historial' && (
-             <div className="admin-table-wrap">
-               <table className="admin-table">
-                 <thead>
-                   <tr>
-                     <th>Fecha</th>
-                     <th>Cliente</th>
-                     <th>Contacto / Dirección</th>
-                     <th>Detalle Pedido</th>
-                     <th>Total</th>
-                     <th>Estado</th>
-                   </tr>
-                 </thead>
-                 <tbody>
-                    {loading ? (
-                       <tr><td colSpan="6" className="admin-empty">Cargando historial...</td></tr>
-                    ) : filteredOrders.map((o) => (
-                       <tr key={o.id}>
-                         <td><div className="admin-date">{new Date(o.fecha).toLocaleString('es-CO')}</div></td>
-                         <td><div className="admin-table-name">{o.nombre_cliente}</div></td>
-                         <td>
-                           <div className="admin-table-desc"><strong>Tel:</strong> {o.telefono}</div>
-                           <div className="admin-table-desc"><strong>Dir:</strong> {o.direccion}</div>
-                         </td>
-                         <td>
-                           <ul className="admin-order-items">
-                             {o.detalle_carrito.map((item, i) => (
-                               <li key={i}>x{item.qty} {item.name}</li>
-                             ))}
-                           </ul>
-                         </td>
-                         <td className="admin-table-price">{formatPrice(o.total)}</td>
-                         <td>
-                           <span className="admin-status-badge success">{o.estado}</span>
-                         </td>
-                       </tr>
-                    ))}
-                    {!loading && filteredOrders.length === 0 && (
-                       <tr><td colSpan="6" className="admin-empty">No hay ventas registradas</td></tr>
-                    )}
-                 </tbody>
-               </table>
-             </div>
+            <div className="admin-table-wrap">
+              <table className="admin-table">
+                <thead>
+                  <tr>
+                    <th>Fecha</th>
+                    <th>Cliente</th>
+                    <th>Contacto / Dirección</th>
+                    <th>Detalle Pedido</th>
+                    <th>Total</th>
+                    <th>Estado</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {loading ? (
+                    <tr><td colSpan="6" className="admin-empty">Cargando historial...</td></tr>
+                  ) : filteredOrders.map((o) => (
+                    <tr key={o.id}>
+                      <td><div className="admin-date">{new Date(o.fecha).toLocaleString('es-CO')}</div></td>
+                      <td><div className="admin-table-name">{o.nombre_cliente}</div></td>
+                      <td>
+                        <div className="admin-table-desc"><strong>Tel:</strong> {o.telefono}</div>
+                        <div className="admin-table-desc"><strong>Dir:</strong> {o.direccion}</div>
+                      </td>
+                      <td>
+                        <ul className="admin-order-items">
+                          {o.detalle_carrito.map((item, i) => (
+                            <li key={i}>x{item.qty} {item.name}</li>
+                          ))}
+                        </ul>
+                      </td>
+                      <td className="admin-table-price">{formatPrice(o.total)}</td>
+                      <td>
+                        <span className="admin-status-badge success">{o.estado}</span>
+                      </td>
+                    </tr>
+                  ))}
+                  {!loading && filteredOrders.length === 0 && (
+                    <tr><td colSpan="6" className="admin-empty">No hay ventas registradas</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
           )}
 
         </div>
       </main>
 
+      {/* EDIT / NEW MODAL (PRODUCTS) */}
       {editing !== null && (
         <div className="admin-modal-overlay" onClick={() => !saving && setEditing(null)}>
           <div className="admin-modal" onClick={(e) => e.stopPropagation()}>
@@ -587,6 +597,7 @@ export default function Admin() {
         </div>
       )}
 
+      {/* DELETE CONFIRM (PRODUCTS) */}
       {confirmDelete !== null && (
         <div className="admin-modal-overlay" onClick={() => setConfirmDelete(null)}>
           <div className="admin-modal small" onClick={(e) => e.stopPropagation()}>
@@ -608,7 +619,8 @@ export default function Admin() {
         </div>
       )}
 
-      {toast && <div className="toast show">{ toast }</div>}
+      {/* TOAST */}
+      {toast && <div className="toast show">{toast}</div>}
     </div>
   )
 }
