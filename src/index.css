@@ -209,7 +209,7 @@ ul { list-style: none; }
 
 /* ===== BANNER ===== */
 .banner-section {
-  max-width: 900px; /* Reducido para que la imagen sea más pequeña globalmente */
+  max-width: 900px;
   margin: 0 auto;
   padding: 24px 24px 0;
 }
@@ -218,19 +218,52 @@ ul { list-style: none; }
   border-radius: var(--radius-lg);
   overflow: hidden;
   box-shadow: var(--shadow-lg);
+  aspect-ratio: 21 / 9;
+  background: var(--color-mint-cream);
 }
-.banner-wrapper img {
+.banner-slide {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  height: auto; /* Mantiene sus proporciones originales */
-  display: block;
-  transition: transform 0.6s ease;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.8s ease, transform 0.8s ease;
+  transform: scale(1.05);
 }
-.banner-wrapper:hover img { transform: scale(1.02); }
+.banner-slide.active {
+  opacity: 1;
+  transform: scale(1);
+}
+.banner-indicators {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+}
+.banner-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 0;
+  transition: var(--transition);
+}
+.banner-dot.active {
+  background: var(--color-white);
+  transform: scale(1.2);
+}
 .banner-overlay {
   position: absolute;
   inset: 0;
   background: linear-gradient(135deg, rgba(74,103,65,0.15) 0%, transparent 60%);
   pointer-events: none;
+  z-index: 5;
 }
 
 /* ===== PRODUCTS SECTION ===== */
@@ -946,7 +979,7 @@ select.admin-input { cursor: pointer; }
 
 /* --- TABLE --- */
 .admin-table-wrap {
-  padding: 24px 32px;
+  padding: 0;
   overflow-x: auto;
 }
 .admin-table {
@@ -1221,6 +1254,8 @@ select.admin-input { cursor: pointer; }
   flex: 1;
   display: flex;
   flex-direction: column;
+  padding: 28px 32px;
+  gap: 24px;
 }
 .admin-date {
   font-size: 0.85rem;
@@ -1291,3 +1326,111 @@ select.admin-input { cursor: pointer; }
   box-shadow: none;
   background: var(--color-ash);
 }
+
+/* ===== DASHBOARD ===== */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+}
+.dashboard-card {
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-ash);
+  transition: transform 0.3s ease;
+}
+.dashboard-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+.dashboard-card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.dashboard-card.primary .dashboard-card-icon {
+  background: rgba(74,103,65,0.1);
+  color: var(--color-primary);
+}
+.dashboard-card.warning .dashboard-card-icon {
+  background: rgba(243,156,18,0.1);
+  color: #f39c12;
+}
+.dashboard-card.danger .dashboard-card-icon {
+  background: rgba(231,76,60,0.1);
+  color: #e74c3c;
+}
+.dashboard-card-info h3 {
+  font-size: 0.9rem;
+  color: var(--color-text-light);
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+.dashboard-val {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 4px;
+}
+.dashboard-card-info span {
+  font-size: 0.8rem;
+  color: var(--color-text-light);
+}
+
+.dashboard-top-products {
+  grid-column: 1 / -1;
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-ash);
+}
+.dashboard-top-products h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-primary);
+  margin-bottom: 16px;
+  font-size: 1.1rem;
+}
+.top-products-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.top-product-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  background: var(--color-mint-cream);
+  border-radius: var(--radius-md);
+  gap: 16px;
+}
+.top-product-rank {
+  font-weight: bold;
+  color: var(--color-primary);
+  font-size: 1.2rem;
+}
+.top-product-name {
+  flex: 1;
+  font-weight: 500;
+  color: var(--color-text);
+}
+.top-product-qty {
+  background: var(--color-white);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-primary-dark);
+}
+

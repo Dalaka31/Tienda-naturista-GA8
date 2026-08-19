@@ -48,3 +48,12 @@ export async function clearHistory() {
   }
   return res.json()
 }
+
+export async function deleteOrder(id) {
+  const res = await fetch(`${API}/pedidos/${id}`, { method: 'DELETE' })
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    throw new Error(err.error || 'Error al eliminar pedido')
+  }
+  return res.json()
+}

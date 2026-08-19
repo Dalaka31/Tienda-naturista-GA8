@@ -15,7 +15,7 @@ const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANO
 
 
 app.get('/', (req, res) => {
-  res.send('🌿 API de El Jardín de Morgana funcionando correctamente')
+  res.send('API de El Jardín de Morgana funcionando correctamente')
 })
 
 
@@ -26,21 +26,37 @@ app.post('/api/pedidos', async (req, res) => {
     return res.status(400).json({ error: 'Todos los campos son requeridos' })
   }
 
-  const { data, error } = await supabase.rpc('registrar_pedido', {
-    p_nombre: nombre_cliente,
-    p_telefono: telefono,
-    p_direccion: direccion,
-    p_detalle: detalle_carrito,
-    p_total: total
-  })
+  try {
+    const { data, error } = await supabase
+      .from('pedidos')
+      .insert([
+        {
+          nombre_cliente,
+          telefono,
+          direccion,
+          detalle_carrito,
+          total,
+          estado: 'PENDIENTE'
+        }
+      ])
+      .select()
 
-  if (error) {
-    console.error('Error creando pedido:', error)
-    return res.status(400).json({ error: error.message || 'Error al procesar el pedido' })
+    if (error) {
+      console.error('Error creando pedido:', error)
+      return res.status(400).json({ error: error.message || 'Error al procesar el pedido' })
+    }
+
+    if (!data || data.length === 0) {
+      console.error('Error: no se obtuvieron datos al crear el pedido')
+      return res.status(500).json({ error: 'Error al procesar el pedido en la base de datos' })
+    }
+
+    console.log(`Pedido #${data[0].id} creado - ${nombre_cliente}`)
+    res.status(201).json(data[0])
+  } catch (err) {
+    console.error('Excepción al crear pedido:', err)
+    res.status(500).json({ error: 'Error interno del servidor al procesar el pedido' })
   }
-
-  console.log(`✅ Pedido #${data.id} creado y stock reservado — ${nombre_cliente}`)
-  res.status(201).json(data)
 })
 
 
@@ -62,48 +78,81 @@ app.get('/api/pedidos', async (req, res) => {
 
 
 app.put('/api/pedidos/:id/completar', async (req, res) => {
-  const pedidoId = parseInt(req.params.id)
+  const pedidoId = req.params.id
 
-  const { error } = await supabase.rpc('completar_pedido', { p_pedido_id: pedidoId })
+  try {
+    const { data: pedido, error: errFetch } = await supabase.from('pedidos').select('*').eq('id', pedidoId).single()
+    if (errFetch || !pedido) throw new Error('Pedido no encontrado')
 
-  if (error) {
+    for (const item of pedido.detalle_carrito) {
+      const { data: inv } = await supabase.from('inventario').select('stock_actual').eq('producto_id', item.id).single()
+      if (inv) {
+        await supabase.from('inventario').update({ stock_actual: inv.stock_actual - item.qty }).eq('producto_id', item.id)
+      }
+    }
+
+    const { error: errUpdate } = await supabase.from('pedidos').update({ estado: 'COMPLETADO' }).eq('id', pedidoId)
+    if (errUpdate) throw errUpdate
+
+    console.log(`Pedido #${pedidoId} COMPLETADO - inventario actualizado`)
+    res.json({ message: 'Pedido completado exitosamente' })
+  } catch (error) {
     console.error('Error completando pedido:', error)
-    return res.status(500).json({ error: error.message || 'Error al completar el pedido' })
+    res.status(500).json({ error: error.message || 'Error al completar el pedido' })
   }
-
-  console.log(`✅ Pedido #${pedidoId} COMPLETADO — inventario actualizado`)
-  res.json({ message: 'Pedido completado exitosamente' })
 })
 
 
 app.put('/api/pedidos/:id/cancelar', async (req, res) => {
-  const pedidoId = parseInt(req.params.id)
+  const pedidoId = req.params.id
 
-  const { error } = await supabase.rpc('cancelar_pedido_y_devolver_stock', { p_pedido_id: pedidoId })
-
-  if (error) {
+  try {
+    const { error } = await supabase.from('pedidos').update({ estado: 'CANCELADO' }).eq('id', pedidoId)
+    if (error) throw error
+    console.log(`Pedido #${pedidoId} CANCELADO (sin cambios en stock)`)
+    res.json({ message: 'Pedido cancelado exitosamente' })
+  } catch (error) {
     console.error('Error cancelando pedido:', error)
-    return res.status(500).json({ error: error.message || 'Error al cancelar el pedido' })
+    res.status(500).json({ error: error.message || 'Error al cancelar el pedido' })
   }
-
-  console.log(`❌ Pedido #${pedidoId} CANCELADO y stock restaurado`)
-  res.json({ message: 'Pedido cancelado y stock restaurado' })
 })
 
 
-app.delete('/api/pedidos/historial', async (req, res) => {
-  const { error } = await supabase
-    .from('pedidos')
-    .delete()
-    .eq('estado', 'COMPLETADO')
+app.delete('/api/historial', async (req, res) => {
+  const { error } = await supabase.from('pedidos').delete().eq('estado', 'COMPLETADO')
 
   if (error) {
-    console.error('Error borrando historial:', error)
     return res.status(500).json({ error: 'Error al borrar el historial' })
   }
 
-  console.log(`🗑️ Historial de ventas borrado`)
+  console.log(`Historial de ventas borrado`)
   res.json({ message: 'Historial borrado exitosamente' })
+})
+
+app.delete('/api/pedidos/:id', async (req, res) => {
+  const pedidoId = req.params.id
+  try {
+    const { data: pedido, error: errFetch } = await supabase.from('pedidos').select('*').eq('id', pedidoId).single()
+    if (errFetch || !pedido) throw new Error('Pedido no encontrado')
+
+    if (pedido.estado === 'COMPLETADO') {
+      for (const item of pedido.detalle_carrito) {
+        const { data: inv } = await supabase.from('inventario').select('stock_actual').eq('producto_id', item.id).single()
+        if (inv) {
+          await supabase.from('inventario').update({ stock_actual: inv.stock_actual + item.qty }).eq('producto_id', item.id)
+        }
+      }
+    }
+
+    const { error: errDel } = await supabase.from('pedidos').delete().eq('id', pedidoId)
+    if (errDel) throw errDel
+
+    console.log(`Pedido #${pedidoId} ELIMINADO y stock restaurado si aplicaba`)
+    res.json({ message: 'Pedido eliminado y stock restaurado' })
+  } catch (error) {
+    console.error('Error al eliminar pedido:', error)
+    res.status(500).json({ error: error.message || 'Error al eliminar pedido' })
+  }
 })
 
 
@@ -127,8 +176,8 @@ app.get('/api/inventario', async (req, res) => {
     id: p.id,
     name: p.name,
     category: p.category,
-    stock_actual: Array.isArray(p.inventario) 
-      ? (p.inventario[0]?.stock_actual || 0) 
+    stock_actual: Array.isArray(p.inventario)
+      ? (p.inventario[0]?.stock_actual || 0)
       : (p.inventario?.stock_actual || 0)
   }))
 
@@ -141,7 +190,7 @@ app.put('/api/inventario/:producto_id', async (req, res) => {
   const producto_id = parseInt(req.params.producto_id)
 
   const { data: inv } = await supabase.from('inventario').select('*').eq('producto_id', producto_id).single()
-  
+
   let error
   if (inv) {
     ({ error } = await supabase.from('inventario').update({ stock_actual }).eq('producto_id', producto_id))
@@ -160,5 +209,5 @@ app.put('/api/inventario/:producto_id', async (req, res) => {
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
-  console.log(`🌿 Backend El Jardín de Morgana corriendo en http://localhost:${PORT}`)
+  console.log(`Backend El Jardín de Morgana corriendo en http://localhost:${PORT}`)
 })

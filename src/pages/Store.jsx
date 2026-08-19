@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { loadProducts, CATEGORIES, PHONE } from '../data/products'
 import { createOrder } from '../data/orders'
+import { fetchBanners } from '../data/banners'
 
 
 const formatPrice = (n) =>
@@ -10,9 +11,9 @@ function buildWhatsAppUrl(items) {
   const lines = items.map((it) => `• ${it.name} (x${it.qty}) — ${formatPrice(it.price * it.qty)}`)
   const total = items.reduce((s, it) => s + it.price * it.qty, 0)
   const msg =
-    `Hola, Jardín de Morgana.\n\nMe encantaría realizar el siguiente pedido:\n\n` +
+    `¡Hola, El Jardín de Morgana! Quisiera confirmar mi compra por los siguientes productos:\n\n` +
     lines.join('\n') +
-    `\n\n💰 Total estimado: ${formatPrice(total)}\n\n¿Podrían confirmarme disponibilidad y detalles de envío? ¡Muchas gracias! 🍃`
+    `\n\nTotal estimado: ${formatPrice(total)}\n\nQuedo atento/a para coordinar el pago y los detalles de envío. ¡Muchas gracias!`
   return `https://wa.me/${PHONE}?text=${encodeURIComponent(msg)}`
 }
 
@@ -44,7 +45,7 @@ const MapPinIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" heig
 
 
 function Toast({ message, show }) {
-  return <div className={`toast ${show ? 'show' : ''}`}>✨ {message}</div>
+  return <div className={`toast ${show ? 'show' : ''}`}>{message}</div>
 }
 
 
@@ -57,6 +58,8 @@ export default function Store() {
   const [activeCategory, setActiveCategory] = useState('Todos')
   const [searchQuery, setSearchQuery] = useState('')
   const [toast, setToast] = useState({ show: false, message: '' })
+  const [banners, setBanners] = useState([])
+  const [currentBanner, setCurrentBanner] = useState(0)
 
 
   const [checkoutOpen, setCheckoutOpen] = useState(false)
@@ -73,6 +76,22 @@ export default function Store() {
     }
     fetchProducts()
   }, [])
+
+  useEffect(() => {
+    async function getBanners() {
+      const data = await fetchBanners()
+      setBanners(data)
+    }
+    getBanners()
+  }, [])
+
+  useEffect(() => {
+    if (banners.length <= 1) return
+    const interval = setInterval(() => {
+      setCurrentBanner(prev => (prev + 1) % banners.length)
+    }, 5000)
+    return () => clearInterval(interval)
+  }, [banners.length])
 
 
   useEffect(() => {
@@ -101,21 +120,8 @@ export default function Store() {
   function addToCart(product, e) {
     if (e) e.stopPropagation()
 
-
-    if (product.stock_actual <= 0) {
-      showToast(`Agotado: ${product.name}`)
-      return
-    }
-
     setCart((prev) => {
       const exists = prev.find((it) => it.id === product.id)
-
-
-      if (exists && exists.qty >= product.stock_actual) {
-        showToast(`Límite de stock: ${product.stock_actual} unidades disponibles.`)
-        return prev
-      }
-
       showToast(`${product.name} añadido al carrito`)
       if (exists) return prev.map((it) => (it.id === product.id ? { ...it, qty: it.qty + 1 } : it))
       return [...prev, { ...product, qty: 1, stock_actual: product.stock_actual }]
@@ -126,12 +132,7 @@ export default function Store() {
     setCart((prev) =>
       prev.map((it) => {
         if (it.id === id) {
-          const newQty = it.qty + delta
-          if (newQty > it.stock_actual) {
-            showToast(`Solo hay ${it.stock_actual} unidades de ${it.name}.`)
-            return it
-          }
-          return { ...it, qty: newQty }
+          return { ...it, qty: it.qty + delta }
         }
         return it
       }).filter((it) => it.qty > 0)
@@ -228,7 +229,31 @@ export default function Store() {
       {/* BANNER */}
       <section className="banner-section">
         <div className="banner-wrapper">
-          <img src="/banner.png" alt="Bienvenidos al Jardín de Morgana" />
+          {banners.length > 0 ? (
+            <>
+              {banners.map((banner, idx) => (
+                <img 
+                  key={banner.name} 
+                  src={banner.url} 
+                  alt="Banner Jardín de Morgana" 
+                  className={`banner-slide ${idx === currentBanner ? 'active' : ''}`}
+                />
+              ))}
+              {banners.length > 1 && (
+                <div className="banner-indicators">
+                  {banners.map((_, idx) => (
+                    <button 
+                      key={idx} 
+                      className={`banner-dot ${idx === currentBanner ? 'active' : ''}`}
+                      onClick={() => setCurrentBanner(idx)}
+                    />
+                  ))}
+                </div>
+              )}
+            </>
+          ) : (
+            <img src="/banner.png" alt="Bienvenidos al Jardín de Morgana" className="banner-slide active" />
+          )}
           <div className="banner-overlay" />
         </div>
       </section>
@@ -240,20 +265,12 @@ export default function Store() {
         <div className="products-grid">
           {loading ? (
             <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '48px', color: 'var(--color-text-light)' }}>
-              <p style={{ fontSize: '2rem', marginBottom: '8px' }}>⏳</p>
-              <p>Cargando productos...</p>
+              <p style={{ fontSize: '1.2rem', marginBottom: '8px' }}>Cargando productos...</p>
             </div>
           ) : filtered.map((product) => (
             <article key={product.id} className="product-card" onClick={() => setSelectedProduct(product)}>
               <span className="product-card-category">{product.category}</span>
-              <img className={`product-card-img ${product.stock_actual <= 0 ? 'out-of-stock' : ''}`} src={product.image} alt={product.name} />
-
-              {product.stock_actual <= 0 && (
-                <div className="stock-badge empty">Agotado</div>
-              )}
-              {product.stock_actual > 0 && product.stock_actual <= 15 && (
-                <div className="stock-badge low">Quedan {product.stock_actual} en stock</div>
-              )}
+              <img className="product-card-img" src={product.image} alt={product.name} />
 
               <div className="product-card-body">
                 <div className="product-info">
@@ -261,9 +278,9 @@ export default function Store() {
                   <p className="product-price">{formatPrice(product.price)}</p>
                 </div>
                 <button
-                  className={`add-cart-btn ${product.stock_actual <= 0 ? 'disabled' : ''}`}
-                  onClick={(e) => product.stock_actual > 0 && addToCart(product, e)}
-                  title={product.stock_actual > 0 ? "Agregar al carrito" : "Agotado"}
+                  className="add-cart-btn"
+                  onClick={(e) => addToCart(product, e)}
+                  title="Agregar al carrito"
                 >
                   <AddCartIcon />
                 </button>
@@ -355,19 +372,11 @@ export default function Store() {
               <h2 className="modal-name">{selectedProduct.name}</h2>
               <p className="modal-price">{formatPrice(selectedProduct.price)}</p>
 
-              {selectedProduct.stock_actual <= 0 ? (
-                <p style={{ color: '#c0392b', fontSize: '0.9rem', marginBottom: '16px' }}>Agotado</p>
-              ) : selectedProduct.stock_actual <= 15 ? (
-                <p style={{ color: '#e67e22', fontSize: '0.9rem', marginBottom: '16px' }}>Quedan {selectedProduct.stock_actual} en stock</p>
-              ) : null}
-
               <p className="modal-desc">{selectedProduct.description}</p>
               <div className="modal-actions">
                 <button
                   className="modal-add-btn"
                   onClick={() => { addToCart(selectedProduct); setSelectedProduct(null) }}
-                  disabled={selectedProduct.stock_actual <= 0}
-                  style={{ opacity: selectedProduct.stock_actual <= 0 ? 0.5 : 1, cursor: selectedProduct.stock_actual <= 0 ? 'not-allowed' : 'pointer' }}
                 >
                   <AddCartIcon /> Agregar al Carrito
                 </button>
@@ -448,7 +457,7 @@ export default function Store() {
               )}
 
               <button type="submit" className="whatsapp-btn checkout-submit" disabled={checkoutLoading}>
-                {checkoutLoading ? '⏳ Procesando pedido...' : <><WhatsAppIcon /> Confirmar y Enviar por WhatsApp</>}
+                {checkoutLoading ? 'Procesando pedido...' : <><WhatsAppIcon /> Confirmar y Enviar por WhatsApp</>}
               </button>
             </form>
           </div>

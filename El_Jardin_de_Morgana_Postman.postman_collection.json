@@ -1,0 +1,255 @@
+{
+	"info": {
+		"_postman_id": "a90bb67d-d1ef-4171-aa3e-001009949987",
+		"name": "El Jardin de Morgana - Naturista API",
+		"description": "Colección de solicitudes HTTP para probar el backend de El Jardín de Morgana y el control de inventario/pedidos.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "General",
+			"item": [
+				{
+					"name": "Verificar Estado de API",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								""
+							]
+						},
+						"description": "Comprueba si la API del servidor está activa y respondiendo."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Pedidos",
+			"item": [
+				{
+					"name": "Crear Pedido (Reservar Stock)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nombre_cliente\": \"Juan Pérez\",\n  \"telefono\": \"+57 318 404 5140\",\n  \"direccion\": \"Calle de la Armonía #45-12, Bogotá\",\n  \"detalle_carrito\": [\n    {\n      \"id\": 1,\n      \"qty\": 2,\n      \"name\": \"Té de Jengibre y Limón\",\n      \"price\": 12500\n    },\n    {\n      \"id\": 2,\n      \"qty\": 1,\n      \"name\": \"Suplemento de Espirulina\",\n      \"price\": 34000\n    }\n  ],\n  \"total\": 59000\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/pedidos",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"pedidos"
+							]
+						},
+						"description": "Registra un nuevo pedido en estado 'PENDIENTE' y descuenta automáticamente el stock reservado."
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Pedidos (Todos)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/pedidos",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"pedidos"
+							]
+						},
+						"description": "Retorna el listado completo de pedidos."
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Pedidos por Estado (Filtro)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/pedidos?estado=PENDIENTE",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"pedidos"
+							],
+							"query": [
+								{
+									"key": "estado",
+									"value": "PENDIENTE",
+									"description": "Filtros válidos: PENDIENTE, COMPLETADO, CANCELADO"
+								}
+							]
+						},
+						"description": "Obtiene la lista de pedidos filtrados por estado."
+					},
+					"response": []
+				},
+				{
+					"name": "Completar Pedido",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/pedidos/1/completar",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"pedidos",
+								"1",
+								"completar"
+							]
+						},
+						"description": "Cambia el estado de un pedido PENDIENTE a COMPLETADO. Reemplazar '1' por el ID del pedido a completar en la URL."
+					},
+					"response": []
+				},
+				{
+					"name": "Cancelar Pedido (Devolver Stock)",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/pedidos/1/cancelar",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"pedidos",
+								"1",
+								"cancelar"
+							]
+						},
+						"description": "Cambia el estado de un pedido PENDIENTE a CANCELADO y restaura la cantidad reservada al stock. Reemplazar '1' por el ID del pedido a cancelar en la URL."
+					},
+					"response": []
+				},
+				{
+					"name": "Limpiar Historial de Ventas",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/pedidos/historial",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"pedidos",
+								"historial"
+							]
+						},
+						"description": "Elimina del historial todos los pedidos marcados como COMPLETADO."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Inventario",
+			"item": [
+				{
+					"name": "Obtener Inventario Completo",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/inventario",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"inventario"
+							]
+						},
+						"description": "Devuelve la lista de productos y sus niveles de stock actual."
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar Stock de Producto",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"stock_actual\": 50\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/inventario/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"inventario",
+								"1"
+							]
+						},
+						"description": "Modifica la cantidad disponible en el inventario para un producto específico. Reemplazar '1' por el ID del producto a modificar en la URL."
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:3001",
+			"type": "string"
+		}
+	]
+}

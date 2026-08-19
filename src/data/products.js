@@ -2,11 +2,10 @@ import { supabase } from '../lib/supabase'
 
 export const CATEGORIES = [
   'Todos',
-  'Tés',
-  'Hierbas',
+  'Alimentos',
   'Suplementos',
-  'Aromaterapia',
-  'Cuidado Personal',
+  'Fitoterapéuticos',
+  'Dermocosméticos',
 ]
 
 export const PHONE = '573184045140'
